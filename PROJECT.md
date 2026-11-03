@@ -43,22 +43,24 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - Điều kiện thành công:
 
 ## Cài đặt thí nghiệm (recipe chung)
-- Kích thước ảnh:
-- Augmentation:
-- Optimizer / learning rate / epoch:
+- Kích thước ảnh: 224×224
+- Augmentation: resize 224×224; train dùng random horizontal flip; val/test chỉ resize; chuẩn hóa theo ImageNet mean/std.
+- Optimizer / learning rate / epoch: AdamW, learning rate 0.0003, weight decay 0.0001, batch size 32, 10 epoch.
 - Seed sẽ chạy: 42, 43, 44
-- Pretrained weights:
+- Pretrained weights: ImageNet weights từ torchvision, áp dụng đồng nhất cho cả ba model.
 
 ## Trạng thái
 - [x] Điền Bài toán và Dữ liệu
 - [x] EDA
 - [x] Chốt split (`data/splits/v1/`)
-- [ ] Pipeline chạy thông suốt với một model (baseline)
-- [ ] Thêm các model còn lại
+- [x] Pipeline chạy thông suốt với một model (baseline smoke run)
+- [x] Tạo factory cho các model resnet50, vit_b16, convnext_t
 - [ ] Chạy đủ 3 seed cho mỗi model
 - [ ] Chạy `compare.py`, chốt bảng so sánh trong `reports/`
 
 ## Quyết định đã chốt
+- 2026-11-03, recipe chung dùng ảnh 224×224, horizontal flip khi train, chuẩn hóa ImageNet, AdamW (lr 0.0003, weight decay 0.0001), batch size 32, 10 epoch và ImageNet pretrained weights.
+- 2026-11-03, pipeline train dùng chung đọc CSV split v1; smoke run có thể giới hạn số dòng bằng `--limit` và ghi checkpoint/log/metrics trong `experiments/`.
 - 2026-11-03, giữ nguyên `data/raw/` trong quá trình EDA; notebook chỉ đọc dữ liệu.
 - 2026-11-03, phải xử lý/loại trừ exact duplicate giữa train và test trước khi chốt split vì EDA phát hiện 122 nhóm ảnh trùng nội dung giữa hai split.
 - 2026-11-03, `src/data/dataset.py` chỉ nhận `root`, danh sách `images`, danh sách `labels` và `transform`; chuẩn hóa nhãn sẽ thực hiện ở bước tạo `processed/`.
@@ -74,4 +76,5 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - Notebook chuẩn bị dataset `notebooks/01.1_prepare_dataset.ipynb` đã chạy thành công; ảnh processed là JPEG/RGB, cạnh ngắn tối thiểu 50 px.
 
 ## Vấn đề đang mở
-- Cần viết và kiểm tra `transforms.py` và `dataloader.py` đọc được các CSV split v1 trước khi chạy baseline.
+- Baseline smoke run ResNet-50 thành công với lệnh `python scripts/train.py --model resnet50 --epochs 1 --limit 64`; kết quả chỉ là kiểm tra pipeline, không dùng để so sánh model.
+- Cần chạy đầy đủ 3 seed cho mỗi model, sau đó chạy `compare.py` và chốt báo cáo.
