@@ -49,7 +49,7 @@ def main() -> None:
     optimizer = build_optimizer(model, str(train_cfg["optimizer"]), float(train_cfg["learning_rate"]), float(train_cfg["weight_decay"]))
     output_dir = PROJECT_ROOT / "experiments" / f"{args.model}_seed{seed}"
     print(f"device={device}; train={len(train_loader.dataset)}; val={len(val_loader.dataset)}; output={output_dir}")
-    result = train_model(model, train_loader, val_loader, optimizer, device, epochs, len(classes), output_dir, args.model, seed)
+    result = train_model(model, train_loader, val_loader, optimizer, device, epochs, len(classes), output_dir, args.model, seed, epochs)
     print(f"saved metrics: {output_dir / 'metrics.json'}")
     print(result)
 

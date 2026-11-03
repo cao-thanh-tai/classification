@@ -24,6 +24,7 @@ def train_model(
     output_dir: str | Path,
     model_name: str,
     seed: int,
+    epochs_requested: int,
 ) -> dict[str, float | int | str]:
     output_dir = Path(output_dir)
     (output_dir / "checkpoints").mkdir(parents=True, exist_ok=True)
@@ -73,6 +74,9 @@ def train_model(
         "infer_ms": history[-1]["infer_ms"],
         "train_min": train_min,
         "best_epoch": int(next(row["epoch"] for row in history if row["val_f1"] == best_f1)),
+        "epochs": epochs_requested,
+        "train_samples": len(train_loader.dataset),
+        "val_samples": len(val_loader.dataset),
     }
     with (output_dir / "metrics.json").open("w", encoding="utf-8") as stream:
         json.dump(result, stream, indent=2)
