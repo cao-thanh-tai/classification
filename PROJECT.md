@@ -47,7 +47,7 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - Augmentation: resize 224×224; train dùng random horizontal flip; val/test chỉ resize; chuẩn hóa theo ImageNet mean/std.
 - Optimizer / learning rate / epoch: AdamW, learning rate 0.0003, weight decay 0.0001, batch size 32, 10 epoch.
 - Seed sẽ chạy: 42, 43, 44
-- Pretrained weights: ImageNet weights từ torchvision, áp dụng đồng nhất cho cả ba model.
+- Pretrained weights: ImageNet weights từ torchvision, áp dụng đồng nhất cho cả bốn model.
 
 ## Trạng thái
 - [x] Điền Bài toán và Dữ liệu
@@ -58,13 +58,14 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - [x] Hoàn thiện script tổng hợp comparison CSV/Markdown/biểu đồ
 - [x] Chạy đủ 3 seed cho mỗi model
 - [x] Chạy `compare.py`, xuất bảng so sánh trong `reports/`
-- [ ] Đánh giá 12 checkpoint trên test split và xuất báo cáo test
+- [x] Đánh giá 12 checkpoint trên test split và xuất báo cáo test
 
 ## Quyết định đã chốt
 - 2026-11-03, recipe chung dùng ảnh 224×224, horizontal flip khi train, chuẩn hóa ImageNet, AdamW (lr 0.0003, weight decay 0.0001), batch size 32, 10 epoch và ImageNet pretrained weights.
 - 2026-11-03, pipeline train dùng chung đọc CSV split v1; smoke run có thể giới hạn số dòng bằng `--limit` và ghi checkpoint/log/metrics trong `experiments/`.
-- 2026-11-03, hoàn tất 9 lượt train (3 model × seed 42/43/44), mỗi lượt 10 epoch trên cùng split v1 và recipe chung; bảng so sánh gộp trung bình ± độ lệch chuẩn theo seed.
-- 2026-11-03, bổ sung ResNet-18 với torchvision ImageNet weights và cùng recipe; smoke check tối đa 64 ảnh không được tính vào so sánh. Cần chạy lại ba seed đầy đủ cho ResNet-18 và chạy lại bảng validation bốn model.
+- 2026-11-03, giai đoạn đầu hoàn tất 9 lượt train cho ba model ban đầu; sau khi thêm ResNet-18, đã chạy lại báo cáo validation với đủ bốn model.
+- 2026-11-03, bổ sung ResNet-18 với torchvision ImageNet weights và cùng recipe; smoke check tối đa 64 ảnh chỉ dùng kiểm tra pipeline.
+- 2026-11-03, hoàn tất 12 lượt train (4 model × seed 42/43/44), cập nhật so sánh validation cho cả bốn model và đánh giá 12 checkpoint trên test split.
 - 2026-11-03, giữ nguyên `data/raw/` trong quá trình EDA; notebook chỉ đọc dữ liệu.
 - 2026-11-03, phải xử lý/loại trừ exact duplicate giữa train và test trước khi chốt split vì EDA phát hiện 122 nhóm ảnh trùng nội dung giữa hai split.
 - 2026-11-03, `src/data/dataset.py` chỉ nhận `root`, danh sách `images`, danh sách `labels` và `transform`; chuẩn hóa nhãn sẽ thực hiện ở bước tạo `processed/`.
@@ -78,10 +79,10 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - Có 122 nhóm exact duplicate giữa train và test; đã xử lý trước khi chốt split.
 - Dataset v1: train 1.743 ảnh, val 436 ảnh, test 1.020 ảnh; loại 1 ảnh quá nhỏ, 116 ảnh train trùng test, 5 ảnh duplicate nội bộ train và 5 ảnh duplicate nội bộ test.
 - Notebook chuẩn bị dataset `notebooks/01.1_prepare_dataset.ipynb` đã chạy thành công; ảnh processed là JPEG/RGB, cạnh ngắn tối thiểu 50 px.
-- So sánh validation (mean ± std, 3 seed): ConvNeXt-T macro F1 0.959 ± 0.002, ResNet-50 0.953 ± 0.007, ViT-B/16 0.875 ± 0.024. ConvNeXt-T có F1 validation cao nhất trong các model đã chạy.
-- Báo cáo đã tạo: `reports/comparison.csv`, `reports/comparison.md`, `reports/figures/comparison.png`; kết quả là trên validation, chưa phải benchmark test.
+- So sánh validation macro F1 (mean ± std, 3 seed): ConvNeXt-T 0.959 ± 0.002, ResNet-50 0.953 ± 0.007, ResNet-18 0.928 ± 0.006, ViT-B/16 0.875 ± 0.024. ConvNeXt-T cao nhất trên validation.
+- So sánh test macro F1 (mean ± std, 3 seed): ResNet-50 0.925 ± 0.011, ConvNeXt-T 0.924 ± 0.010, ResNet-18 0.882 ± 0.014, ViT-B/16 0.852 ± 0.017. ResNet-50 và ConvNeXt-T có kết quả test gần nhau.
+- Báo cáo validation: `reports/comparison.csv`, `reports/comparison.md`, `reports/figures/comparison.png`.
+- Báo cáo test: `reports/test_comparison.csv`, `reports/test_comparison.md`, `reports/figures/test_comparison.png`.
 
 ## Vấn đề đang mở
-- Cần chạy ResNet-18 đủ seed 42/43/44 rồi chạy lại `python scripts/compare.py`; các báo cáo hiện tại vẫn phản ánh ba model cũ.
-- Script `python scripts/evaluate.py` đã hỗ trợ inference-only cho cả bốn model; sau khi hoàn tất ba seed ResNet-18, có thể đánh giá 12 checkpoint trên test split và xuất `reports/test_comparison.csv`, `reports/test_comparison.md`, `reports/figures/test_comparison.png`.
-- Bước test chưa chạy; chỉ chạy sau khi đã chốt model/recipe từ validation. Test scores không được dùng để chọn lại model.
+- Đã hoàn tất so sánh validation và benchmark test cho bốn model. Không còn lượt train hay bước báo cáo bắt buộc đang chờ.
