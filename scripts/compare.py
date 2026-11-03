@@ -18,7 +18,7 @@ def main() -> None:
     split_dir = PROJECT_ROOT / data_cfg["split_dir"]
     train_samples = sum(1 for _ in (split_dir / "train.csv").open(encoding="utf-8")) - 1
     val_samples = sum(1 for _ in (split_dir / "val.csv").open(encoding="utf-8")) - 1
-    models = ["resnet50", "vit_b16", "convnext_t"]
+    models = ["resnet18", "resnet50", "vit_b16", "convnext_t"]
     rows = collect_metrics(
         PROJECT_ROOT / "experiments",
         models,

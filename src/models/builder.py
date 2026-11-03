@@ -15,7 +15,7 @@ def build_model(name: str, num_classes: int, pretrained: bool = True) -> nn.Modu
     except KeyError as exc:
         raise ValueError(f"Unsupported model {name!r}; choose from {', '.join(MODEL_REGISTRY)}") from exc
     model = constructor(weights=default_weights if pretrained else None)
-    if name == "resnet50":
+    if name in {"resnet18", "resnet50"}:
         model.fc = nn.Linear(model.fc.in_features, num_classes)
     elif name == "vit_b16":
         model.heads.head = nn.Linear(model.heads.head.in_features, num_classes)

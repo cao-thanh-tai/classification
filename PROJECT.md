@@ -37,7 +37,7 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - Ghi chú đặc biệt: tên nhãn raw không đồng nhất; ảnh processed được chuẩn hóa JPEG/RGB.
 
 ## Mục tiêu
-- So sánh các model: resnet50, vit_b16, convnext_t
+- So sánh các model: resnet18, resnet50, vit_b16, convnext_t
 - Metric chính: f1
 - Metric phụ: tốc độ suy luận, số tham số, thời gian train
 - Điều kiện thành công:
@@ -54,16 +54,17 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - [x] EDA
 - [x] Chốt split (`data/splits/v1/`)
 - [x] Pipeline chạy thông suốt với một model (baseline smoke run)
-- [x] Tạo factory cho các model resnet50, vit_b16, convnext_t
+- [x] Tạo factory cho các model resnet18, resnet50, vit_b16, convnext_t
 - [x] Hoàn thiện script tổng hợp comparison CSV/Markdown/biểu đồ
 - [x] Chạy đủ 3 seed cho mỗi model
 - [x] Chạy `compare.py`, xuất bảng so sánh trong `reports/`
-- [ ] Đánh giá 9 checkpoint trên test split và xuất báo cáo test
+- [ ] Đánh giá 12 checkpoint trên test split và xuất báo cáo test
 
 ## Quyết định đã chốt
 - 2026-11-03, recipe chung dùng ảnh 224×224, horizontal flip khi train, chuẩn hóa ImageNet, AdamW (lr 0.0003, weight decay 0.0001), batch size 32, 10 epoch và ImageNet pretrained weights.
 - 2026-11-03, pipeline train dùng chung đọc CSV split v1; smoke run có thể giới hạn số dòng bằng `--limit` và ghi checkpoint/log/metrics trong `experiments/`.
 - 2026-11-03, hoàn tất 9 lượt train (3 model × seed 42/43/44), mỗi lượt 10 epoch trên cùng split v1 và recipe chung; bảng so sánh gộp trung bình ± độ lệch chuẩn theo seed.
+- 2026-11-03, bổ sung ResNet-18 với torchvision ImageNet weights và cùng recipe; smoke check tối đa 64 ảnh không được tính vào so sánh. Cần chạy lại ba seed đầy đủ cho ResNet-18 và chạy lại bảng validation bốn model.
 - 2026-11-03, giữ nguyên `data/raw/` trong quá trình EDA; notebook chỉ đọc dữ liệu.
 - 2026-11-03, phải xử lý/loại trừ exact duplicate giữa train và test trước khi chốt split vì EDA phát hiện 122 nhóm ảnh trùng nội dung giữa hai split.
 - 2026-11-03, `src/data/dataset.py` chỉ nhận `root`, danh sách `images`, danh sách `labels` và `transform`; chuẩn hóa nhãn sẽ thực hiện ở bước tạo `processed/`.
@@ -81,5 +82,6 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - Báo cáo đã tạo: `reports/comparison.csv`, `reports/comparison.md`, `reports/figures/comparison.png`; kết quả là trên validation, chưa phải benchmark test.
 
 ## Vấn đề đang mở
-- Đã hoàn tất pipeline và so sánh validation. Script `python scripts/evaluate.py` đã sẵn sàng để đánh giá inference-only cả 9 checkpoint trên test split, lưu metrics theo từng run và xuất `reports/test_comparison.csv`, `reports/test_comparison.md`, `reports/figures/test_comparison.png`.
+- Cần chạy ResNet-18 đủ seed 42/43/44 rồi chạy lại `python scripts/compare.py`; các báo cáo hiện tại vẫn phản ánh ba model cũ.
+- Script `python scripts/evaluate.py` đã hỗ trợ inference-only cho cả bốn model; sau khi hoàn tất ba seed ResNet-18, có thể đánh giá 12 checkpoint trên test split và xuất `reports/test_comparison.csv`, `reports/test_comparison.md`, `reports/figures/test_comparison.png`.
 - Bước test chưa chạy; chỉ chạy sau khi đã chốt model/recipe từ validation. Test scores không được dùng để chọn lại model.

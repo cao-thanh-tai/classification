@@ -20,7 +20,7 @@ from src.models.builder import build_model
 from src.utils.config import load_yaml
 
 
-MODELS = ("resnet50", "vit_b16", "convnext_t")
+MODELS = ("resnet18", "resnet50", "vit_b16", "convnext_t")
 
 
 def main() -> None:
