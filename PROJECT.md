@@ -58,6 +58,7 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - [x] Hoàn thiện script tổng hợp comparison CSV/Markdown/biểu đồ
 - [x] Chạy đủ 3 seed cho mỗi model
 - [x] Chạy `compare.py`, xuất bảng so sánh trong `reports/`
+- [ ] Đánh giá 9 checkpoint trên test split và xuất báo cáo test
 
 ## Quyết định đã chốt
 - 2026-11-03, recipe chung dùng ảnh 224×224, horizontal flip khi train, chuẩn hóa ImageNet, AdamW (lr 0.0003, weight decay 0.0001), batch size 32, 10 epoch và ImageNet pretrained weights.
@@ -80,4 +81,5 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - Báo cáo đã tạo: `reports/comparison.csv`, `reports/comparison.md`, `reports/figures/comparison.png`; kết quả là trên validation, chưa phải benchmark test.
 
 ## Vấn đề đang mở
-- Đã hoàn tất pipeline và so sánh validation; nếu cần kết luận benchmark cuối cùng thì bước tiếp theo là đánh giá model đã chọn trên test split chưa dùng trong huấn luyện.
+- Đã hoàn tất pipeline và so sánh validation. Script `python scripts/evaluate.py` đã sẵn sàng để đánh giá inference-only cả 9 checkpoint trên test split, lưu metrics theo từng run và xuất `reports/test_comparison.csv`, `reports/test_comparison.md`, `reports/figures/test_comparison.png`.
+- Bước test chưa chạy; chỉ chạy sau khi đã chốt model/recipe từ validation. Test scores không được dùng để chọn lại model.
