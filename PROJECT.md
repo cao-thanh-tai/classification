@@ -59,6 +59,9 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - [x] Chạy đủ 3 seed cho mỗi model
 - [x] Chạy `compare.py`, xuất bảng so sánh trong `reports/`
 - [x] Đánh giá 12 checkpoint trên test split và xuất báo cáo test
+- [x] Thêm factory và đăng ký model `vit_b32`
+- [x] Smoke test `vit_b32` với 1 epoch và tối đa 64 ảnh
+- [ ] Chạy đủ seed và cập nhật benchmark cho `vit_b32` (người dùng tự chạy)
 
 ## Quyết định đã chốt
 - 2026-11-03, recipe chung dùng ảnh 224×224, horizontal flip khi train, chuẩn hóa ImageNet, AdamW (lr 0.0003, weight decay 0.0001), batch size 32, 10 epoch và ImageNet pretrained weights.
@@ -71,6 +74,7 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - 2026-11-03, `src/data/dataset.py` chỉ nhận `root`, danh sách `images`, danh sách `labels` và `transform`; chuẩn hóa nhãn sẽ thực hiện ở bước tạo `processed/`.
 - 2026-11-03, tạo `data/splits/v1/` bằng seed 42, validation 20% theo từng lớp; CSV trỏ tới ảnh processed trong `data/processed/images/`.
 - 2026-11-03, loại ảnh có cạnh ngắn dưới 50 px; chuyển ảnh hợp lệ sang JPEG RGB trong `data/processed/images/`, không sửa `data/raw/`.
+- 2026-11-03, bổ sung `vit_b32` dùng torchvision ViT-B/32 ImageNet weights và giữ nguyên recipe chung; chỉ chạy smoke test, không tự chạy benchmark đầy đủ.
 
 ## Kết quả tóm tắt
 - EDA: 2.301 ảnh train, 1.025 ảnh test, 48 ảnh predict; 10 lớp.
@@ -83,6 +87,7 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 - So sánh test macro F1 (mean ± std, 3 seed): ResNet-50 0.925 ± 0.011, ConvNeXt-T 0.924 ± 0.010, ResNet-18 0.882 ± 0.014, ViT-B/16 0.852 ± 0.017. ResNet-50 và ConvNeXt-T có kết quả test gần nhau.
 - Báo cáo validation: `reports/comparison.csv`, `reports/comparison.md`, `reports/figures/comparison.png`.
 - Báo cáo test: `reports/test_comparison.csv`, `reports/test_comparison.md`, `reports/figures/test_comparison.png`.
+- Smoke test `vit_b32`: chạy thành công trên CPU với 1 epoch, giới hạn 64 ảnh; kết quả này chỉ xác nhận pipeline, không dùng làm benchmark.
 
 ## Vấn đề đang mở
-- Đã hoàn tất so sánh validation và benchmark test cho bốn model. Không còn lượt train hay bước báo cáo bắt buộc đang chờ.
+- Đã hoàn tất so sánh validation và benchmark test cho bốn model. `vit_b32` đã được tích hợp và smoke test thành công; các lượt train đầy đủ, evaluate và cập nhật báo cáo cho model này đang chờ người dùng tự chạy.

@@ -22,7 +22,7 @@ from src.utils.seed import set_seed
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", required=True, choices=("resnet18", "resnet50", "vit_b16", "convnext_t"))
+    parser.add_argument("--model", required=True, choices=("resnet18", "resnet50", "vit_b16", "vit_b32", "convnext_t"))
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--limit", type=int, default=None, help="Cap each split to this many rows for a smoke run")
@@ -56,4 +56,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

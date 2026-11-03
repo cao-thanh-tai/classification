@@ -17,7 +17,7 @@ def build_model(name: str, num_classes: int, pretrained: bool = True) -> nn.Modu
     model = constructor(weights=default_weights if pretrained else None)
     if name in {"resnet18", "resnet50"}:
         model.fc = nn.Linear(model.fc.in_features, num_classes)
-    elif name == "vit_b16":
+    elif name in {"vit_b16", "vit_b32"}:
         model.heads.head = nn.Linear(model.heads.head.in_features, num_classes)
     elif name == "convnext_t":
         model.classifier[-1] = nn.Linear(model.classifier[-1].in_features, num_classes)
@@ -26,4 +26,3 @@ def build_model(name: str, num_classes: int, pretrained: bool = True) -> nn.Modu
 
 def build_configured_model(name: str, num_classes: int, config: dict[str, Any]) -> nn.Module:
     return build_model(name, num_classes, bool(config.get("pretrained", True)))
-

@@ -27,9 +27,16 @@
 
 1. Tạo `src/models/<tên>/` gồm `__init__.py`, `model.py`, `config.yaml` (theo mẫu model đã có).
 2. Đăng ký tên trong `src/models/registry.py`.
-3. Chạy thử 1 epoch trên mẫu nhỏ: `python scripts/train.py --model <tên> --epochs 1 --limit 64`. Phải ra được `experiments/<tên>_seed<N>/metrics.json`.
-4. Chỉ khi bước 3 thành công mới báo xong. Không báo "xong" khi chưa chạy.
+3. Nếu người dùng cho phép kiểm tra runtime, chạy thử tối đa 1 epoch trên mẫu nhỏ: `python scripts/train.py --model <tên> --epochs 1 --limit 64`. Nếu không được phép, không chạy.
+4. Chỉ báo smoke test thành công khi đã được phép chạy và lệnh thực sự thành công; nếu chưa chạy thì ghi rõ "chưa chạy".
 5. Chỉ được thêm hoặc sửa file trong `src/models/<tên>/`, `src/models/registry.py` và config liên quan.
+
+### Quy định chạy lệnh
+
+- Không tự chạy train đầy đủ, nhiều seed, evaluate, compare, benchmark hoặc notebook.
+- Chỉ được chạy smoke test tối đa 1 epoch với `--limit 64` để kiểm tra lỗi pipeline, và chỉ khi tác vụ cần xác nhận code chạy được.
+- Không chạy lại các thí nghiệm đã có và không tự tạo số liệu kết quả.
+- Nếu chưa được phép chạy smoke test, chỉ sửa code và báo rõ chưa chạy kiểm tra.
 
 ## 4. Quy trình train và so sánh
 
@@ -37,12 +44,13 @@
 - Mỗi lần chạy ghi vào `experiments/<tên>_seed<N>/` gồm `checkpoints/`, `logs/`, `metrics.json`.
 - `metrics.json` tối thiểu có: `model`, `seed`, metric chính, `params_m`, `infer_ms`, `train_min`.
 - So sánh: `python scripts/compare.py`. Nó đọc mọi `metrics.json`, gộp theo model (trung bình các seed), xuất `reports/comparison.csv`, `reports/comparison.md`, `reports/figures/`.
+- Các lệnh train/compare/evaluate ở mục này chỉ là hướng dẫn để người dùng tự chạy; AI không tự thực hiện nếu chưa được cho phép riêng.
 
 ## 5. Luật so sánh công bằng (bắt buộc)
 
 - Mọi model dùng **cùng split** trong `data/splits/`.
 - Mọi model dùng **cùng recipe** trong `config/train.yaml`. Chỉ đổi model.
-- Chạy **ít nhất 3 seed** rồi lấy trung bình trước khi kết luận.
+- Khi người dùng tự chạy so sánh, mọi model cần chạy **ít nhất 3 seed** rồi lấy trung bình trước khi kết luận. AI không tự chạy các seed này.
 - Pretrained weights dùng **đồng nhất** (cùng nguồn, ví dụ cùng ImageNet) hoặc cùng train từ đầu.
 - Báo cả tốc độ suy luận và số tham số, không chỉ độ chính xác.
 - Nếu một model buộc phải khác recipe, ghi rõ lý do vào `PROJECT.md`, không âm thầm đổi.
@@ -59,6 +67,6 @@
 ## 7. Cách làm việc
 
 - Tác vụ lớn: làm xong **một model chạy thông suốt** trước, rồi mới nhân ra các model còn lại.
-- Sau khi chạy xong, báo ngắn gọn: đã làm gì, chạy lệnh nào, kết quả ra sao, chỗ nào chưa chắc.
+- Nếu được phép chạy smoke test, báo ngắn gọn lệnh đã chạy và kết quả kiểm tra. Nếu không được phép, ghi rõ chưa chạy code.
 - Khi kết thúc phiên hoặc xong một mốc, **cập nhật `PROJECT.md`** (mục Trạng thái và Quyết định đã chốt).
 - Gặp lỗi: đọc kỹ thông báo lỗi, sửa nguyên nhân gốc. Không lặp lại cùng một lệnh hỏng nhiều lần.
