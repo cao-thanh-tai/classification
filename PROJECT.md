@@ -61,6 +61,7 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 ## Quyết định đã chốt
 - 2026-11-03, giữ nguyên `data/raw/` trong quá trình EDA; notebook chỉ đọc dữ liệu.
 - 2026-11-03, phải xử lý/loại trừ exact duplicate giữa train và test trước khi chốt split vì EDA phát hiện 122 nhóm ảnh trùng nội dung giữa hai split.
+- 2026-11-03, `src/data/dataset.py` dùng chung cho EDA và train, hỗ trợ cả class-folder và CSV manifest; nhãn được chuẩn hóa về 10 tên lớp canonical.
 
 ## Kết quả tóm tắt
 - EDA: 2.301 ảnh train, 1.025 ảnh test, 48 ảnh predict; 10 lớp.
@@ -70,4 +71,4 @@ Bài toán phân loại trái cây, thuộc loại classification với 10 class
 
 ## Vấn đề đang mở
 - Cần quyết định cách xử lý 122 nhóm exact duplicate train/test trước khi tạo `data/splits/v1/`.
-- Cần chuẩn hóa mapping tên lớp khi xây dựng dataset (`Apple`/`apple`, `Banana`/`banana`, `strawberries`/`stawberries`).
+- Cần tạo CSV manifest và split v1 sau khi xử lý 122 nhóm exact duplicate.
