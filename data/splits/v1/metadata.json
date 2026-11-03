@@ -1,0 +1,37 @@
+{
+  "version": "v1",
+  "seed": 42,
+  "val_ratio": 0.2,
+  "classes": [
+    "apple",
+    "avocado",
+    "banana",
+    "cherry",
+    "kiwi",
+    "mango",
+    "orange",
+    "pineapple",
+    "strawberries",
+    "watermelon"
+  ],
+  "source": "data/raw",
+  "policy": "keep_test_remove_train",
+  "min_short_side_px": 50,
+  "output_format": "JPEG",
+  "output_mode": "RGB",
+  "jpeg_quality": 95,
+  "counts": {
+    "raw_train": 2301,
+    "raw_test": 1025,
+    "raw_predict": 48,
+    "train": 1743,
+    "val": 436,
+    "test": 1020
+  },
+  "excluded": {
+    "duplicate_of_test": 116,
+    "duplicate_within_train": 5,
+    "short_side_below_50px": 1,
+    "duplicate_within_test": 5
+  }
+}

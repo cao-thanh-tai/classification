@@ -1,0 +1,22 @@
+root: .
+raw_dir: data/raw
+processed_dir: data/processed/images
+processed_manifest: data/processed/manifest.csv
+split_dir: data/splits/v1
+classes:
+  - apple
+  - avocado
+  - banana
+  - cherry
+  - kiwi
+  - mango
+  - orange
+  - pineapple
+  - strawberries
+  - watermelon
+seed: 42
+val_ratio: 0.2
+image_size: 224
+output_format: JPEG
+output_mode: RGB
+min_short_side_px: 50
